@@ -253,3 +253,123 @@
 // console.log(calcTotalPrice(fruits, 'Банан')); // 1375
 // console.log(calcTotalPrice(fruits, 'Яблуко')); // 315
 // console.log(calcTotalPrice(fruits, 'Ківі')); // 0
+
+//11
+
+// Створіть телефонну книгу - об'єкт phonebook,
+// у якого є властивість contacts (список контактів)
+// та методи управління книгою:
+// add(data) - приймає об'єкт data, де зберігається
+// name, email, category, id, createdAt
+// (name i email - обов'язкові параметри, які треба передавати
+// при додаванні нового контакта,
+// category - може передаватись чи ні, якщо ні - має
+// приймати значення "default",
+// id та createdAt генеруються відповідними методами:
+// generateId() і getDate());
+// *не забудь додати перевірку, якщо контакт з таким ім'ям чи імейлом вже є - ми його не додаємо
+// list() - виводить список контактів у вигляді таблиці;
+// filtered(category) - фільтрує контактів по обраній категорії (друзі, робота і т.д.)
+// delete(name) - видаляє контакт з заданим ім'ям;
+// updateName(oldName, newName) - змінює ім'я контакта;
+
+const phonebook = {
+  contacts: [],
+  add(data) {
+    if (!data.name || !data.email) {
+      return;
+    }
+    for (const contact of this.contacts) {
+      if (contact.name === data.name || contact.email === data.email) {
+        return;
+      }
+    }
+    const category = data.category || 'default';
+    const newContact = {
+      name: data.name,
+      email: data.email,
+      category,
+      id: this.generateId(),
+      createdAt: this.getDate(),
+    };
+    this.contacts.push(newContact);
+  },
+  generateId() {
+    return Date.now();
+  },
+  getDate() {
+    return new Date().toLocaleString();
+  },
+  list() {
+    console.table(this.contacts);
+  },
+  filtered(category) {
+    return this.contacts.filter((contact) => contact.category === category);
+  },
+  delete(name) {
+    this.contacts = this.contacts.filter((contact) => contact.name !== name);
+  },
+  updateName(oldName, newName) {
+    for (const contact of this.contacts) {
+      if (contact.name === oldName) {
+        contact.name = newName;
+      }
+    }
+  },
+};
+
+console.log(phonebook.contacts); // []
+
+phonebook.add({
+  name: 'Alex',
+
+  email: 'alex@mail.com',
+
+  category: 'friends',
+});
+
+phonebook.add({
+  name: 'John',
+
+  email: 'john@mail.com',
+
+  category: 'work',
+});
+
+phonebook.add({
+  name: 'Kate',
+
+  email: 'kate@mail.com',
+});
+
+phonebook.list();
+
+console.log(phonebook.filtered('friends'));
+
+// Alex
+
+console.log(phonebook.filtered('default'));
+
+// Kate
+
+phonebook.add({
+  name: 'Alex',
+
+  email: 'another@mail.com',
+});
+
+console.log(phonebook.contacts.length);
+
+// должно остаться 3
+
+phonebook.updateName('Alex', 'Alexander');
+
+phonebook.list();
+
+// Alex → Alexander
+
+phonebook.delete('John');
+
+phonebook.list();
+
+// John удалён
